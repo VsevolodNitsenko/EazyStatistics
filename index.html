@@ -1,0 +1,205 @@
+<html>
+<head>
+<link rel="icon" href="icon.png"/>
+<title>Do you belive in calculator?</title>
+<style type="text/css">
+.warnings {
+    text-align: center;
+    height: 130px;
+    cursor: default;
+    margin-top: 0px;
+    margin-bottom: 10px;
+    color: grey;
+    font-size: 200%;
+    padding: 40px;
+}
+.output {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 75px;
+    padding-bottom: 57px;
+    font-size: 230%;
+    border-bottom: solid;
+    border-width: 1px;
+    text-align: center;
+    cursor: default;
+    color: dimgray;
+}
+.output:hover {
+    background-color: rgba(204,165,168,0.2);
+}
+#inputer {
+    margin-left: 60px;
+    height: 120px;
+    font-size: 300%;
+    border: solid;
+    border-width: 1px;
+    margin-bottom: 20px;
+    border-radius: 15px;
+    text-align: center;
+}
+.ooc {
+    text-align: center;
+    border: solid;
+    border-width: 1px;
+    margin-top: 22px;
+    cursor: pointer;
+    padding: 3px;
+    margin-top: 20px;
+    margin-left: 50px;
+    background-color: rgba(204,165,168,0.1);
+    font-size: 300%;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    border-radius: 15px;
+    border-color: black;
+    color: dimgrey;
+}
+</style>
+</head>
+<body style="margin: 0; padding-bottom: 90px;">
+<input type="number" id="inputer" style="margin-top: 80px" placeholder="  Enter number..."></input>
+<p >
+<div class="ooc" id="d1" onclick="nextNumb()" style="margin-top: 40px;">Continue</div>
+<div class="ooc" id="d2" onclick="getRes()">Get Result</div>
+<div class="ooc" id="d3" onclick="rld()" >Replay</div>
+</p>
+<p id="started" class="output" style="margin-top: 50px;"></p>
+<p id="mod" class="output">output</p>
+<p id="coll" class="output">length</p>
+<p id="sum" class="output">sum</p>
+<p id="raz" class="output">range</p>
+<p id="sred" class="output">average</p>
+<p id="dis" class="output">dispersion</p>
+<script type="text/javascript">
+  
+window.onload = function() {
+  document.getElementById('inputer').style.width = (innerWidth - 120) + 'px'
+  document.getElementById('d1').style.width = (innerWidth - 100) + 'px'
+  document.getElementById('d2').style.width = (innerWidth - 100) + 'px'
+  document.getElementById('d3').style.width = (innerWidth - 100) + 'px'
+}
+
+ function plus(a, b) {
+  function deldot(n) {
+   n = n.toString()
+   var res = ""
+   var s = 0;
+   for(var i = 0; i < n.length; i++) {
+    if(n[i] != ".") { res += n[i] }
+    else { s = n.length-i-1 }
+        }
+    return { n: res, size: s }
+     }
+    var A = deldot(a)
+    var B = deldot(b)
+    var C = 10
+    if(A.size >= B.size) { C = Math.pow(C, A.size) } else { C = Math.pow(C, B.size) }
+    return (a * C + b * C) / C
+ }
+ Array.prototype.copy = function(F) {
+    var res = new Array()
+    for(var i = 0; i < this.length; i++) {
+     var t = this[i]
+     if(typeof F == "function") { t = F(t) }
+     try { if(t.length) { t = t.copy(F) } } catch {}
+     res[i] = t;
+       }
+  return res
+   }
+ Array.prototype.delete = function(t) {
+  var res = []
+  var d = false
+  for(var  i = 0; i < this.length; i++) {
+   if(this[i] != t || d) { res.push(this[i]) }
+   else { d = true }
+     }; return res
+   }
+ function Fix(x) {
+ return eval(x.toFixed(4))
+  }
+ function Str(arr) {
+  var res = ""
+  for(var i = 0; i < arr.length-1; i++) {
+   res += arr[i] + " / "
+     }; res += arr[arr.length-1]
+   return res
+   }
+ function ReadfromEnd(t) {
+  var res = []
+  for(var i = t.length-1; i >= 0; i--) {
+  res.push(t[i])
+     }
+  return res
+   }
+  var numbers = []
+  function addNumb(n) {
+   numbers.push(n)
+   document.getElementById('started').innerHTML = Str(numbers)
+   }
+  function sort() {
+  var res = []
+  var act = numbers.copy()
+  function findBiggest() {
+   var thing = 0
+   for(var i = 0; i < act.length; i++) {
+    if(act[i] > thing) { thing = act[i] }
+       }; return thing
+     }
+  for(var i = 0; i < numbers.length; i++) {
+   var m = findBiggest()
+   act = act.delete(m)
+   res.push(m)
+     }; return ReadfromEnd(res)
+   }
+  function sum() {
+  var res = 0
+  for(var i = 0; i < numbers.length; i++) {
+   res = plus(res, numbers[i])
+     }; return res
+   }
+  function dis(s) {
+  var res = 0
+  for(var i = 0; i < numbers.length; i++) {
+  res = plus(res, Math.pow(numbers[i]-s, 2))
+     }; return res
+   }
+  function raz() {
+  return Math.abs(numbers[0]-numbers[numbers.length-1])
+   }
+
+  
+ var g = document.getElementById("inputer")
+ document.onkeydown = function(e) {
+   if(e.key == 'p') { nextNumb() }
+   if(e.key == 'n') { getRes() }
+  }
+  function nextNumb() { 
+    if(g.value != "") { 
+      addNumb(eval(g.value)); g.value = "" 
+    }
+  }
+
+  function getRes() {
+    document.getElementById('started').innerHTML = Str(numbers)
+    numbers = sort()
+    document.getElementById('mod').innerHTML =  Str(numbers)
+    var sm = sum()
+    document.getElementById('sum').innerHTML = 'sum: ' + sm
+    document.getElementById('dis').innerHTML = 'dispersion: ' + Fix( dis( sm/numbers.length) )
+    document.getElementById('raz').innerHTML = 'range: ' + raz()
+    document.getElementById('coll').innerHTML = 'length: ' + numbers.length
+    document.getElementById('sred').innerHTML = 'average: '+ Fix(sm/numbers.length)
+}
+  function rld() {
+    numbers = new Array()
+    document.getElementById('mod').innerHTML = ""
+    document.getElementById('started').innerHTML = ""
+    document.getElementById('sum').innerHTML = ""
+    document.getElementById('raz').innerHTML = ""
+    document.getElementById('dis').innerHTML = ""
+    document.getElementById('coll').innerHTML = ""
+    document.getElementById('sred').innerHTML = ""
+}
+</script>
+</body></html>
